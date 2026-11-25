@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>window.KEPT_DEMO={"listing":"https://www.etsy.com/listing/4625205978","seen":[],"name":"Steady Habit and Goal Tracker","start":""};</script>
+<script>
+/* KeptApps demo shim: injected at the top of <head> in demo builds only.
+   Config comes from window.KEPT_DEMO = {name, listing, seen:[keys], start:'css selector' }. */
+(function () {
+  var C = window.KEPT_DEMO || {};
+  var NAME = C.name || 'this app';
+  var LISTING = C.listing || 'https://keptapps.etsy.com';
+
+  // 1. Memory-only storage: nothing persists, so the demo resets every visit.
+  var m = {};
+  (C.seen || []).forEach(function (k) { m[k] = '1'; });
+  var mem = {
+    getItem: function (k) { return Object.prototype.hasOwnProperty.call(m, k) ? m[k] : null; },
+    setItem: function (k, v) { m[k] = String(v); },
+    removeItem: function (k) { delete m[k]; },
+    clear: function () { m = {}; },
+    key: function (i) { return Object.keys(m)[i] || null; },
+    get length() { return Object.keys(m).length; }
+  };
+  try { Object.defineProperty(window, 'localStorage', { value: mem, configurable: true }); } catch (e) {}
+
+  // 2. Backups/exports/imports are part of the paid app.
+  var toastEl;
+  function lock() {
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2147483647;background:#1f2a24;color:#fff;font:600 14px/1.4 system-ui,sans-serif;padding:12px 16px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,.25);max-width:90vw;text-align:center';
+      document.body.appendChild(toastEl);
+    }
+    toastEl.innerHTML = 'Backups and imports are part of the full app. <a href="' + LISTING + '" target="_blank" rel="noopener" style="color:#9be7b4">Get ' + NAME + ' on Etsy</a>';
+    toastEl.style.display = 'block';
+    clearTimeout(lock.t); lock.t = setTimeout(function () { toastEl.style.display = 'none'; }, 4000);
+  }
+  var aClick = HTMLAnchorElement.prototype.click;
+  HTMLAnchorElement.prototype.click = function () {
+    if (this.hasAttribute('download')) return lock();
+    return aClick.apply(this, arguments);
+  };
+  var iClick = HTMLInputElement.prototype.click;
+  HTMLInputElement.prototype.click = function () {
+    if (this.type === 'file') return lock();
+    return iClick.apply(this, arguments);
+  };
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+    var a = t.closest('a[download]');
+    var inp = t.closest('input[type=file]');
+    var lab = t.closest('label');
+    if (!inp && lab) inp = lab.querySelector('input[type=file]') || (lab.htmlFor && document.getElementById(lab.htmlFor));
+    if (a || (inp && inp.type === 'file')) { e.preventDefault(); e.stopPropagation(); lock(); }
+  }, true);
+
+  // 3. Banner + auto-load the app's own example data.
+  document.addEventListener('DOMContentLoaded', function () {
+    var bar = document.createElement('div');
+    bar.id = 'kept-demo-bar';
+    bar.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:2147483646;display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;background:#1f2a24;color:#fff;font:600 14px/1.3 system-ui,sans-serif;padding:8px 14px';
+    bar.innerHTML = '<span>Free demo of ' + NAME + ' with example data. It resets each visit.</span>' +
+      '<a href="' + LISTING + '" target="_blank" rel="noopener" style="background:#3fa66b;color:#fff;text-decoration:none;padding:6px 12px;border-radius:8px">Get the full app</a>';
+    document.body.appendChild(bar);
+    function pad() { document.documentElement.style.scrollPaddingTop = bar.offsetHeight + 'px'; document.body.style.paddingTop = bar.offsetHeight + 'px'; }
+    pad(); window.addEventListener('resize', pad);
+
+    setTimeout(function () {
+      if (!C.start) return;
+      var btn = document.querySelector(C.start);
+      if (!btn) return;
+      var oc = window.confirm; window.confirm = function () { return true; };
+      try { btn.click(); } finally { window.confirm = oc; }
+    }, 400);
+  });
+})();
+
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2f6f5e">
+<title>Steady | Habit & Goal Tracker</title>
+<style>
+:root{--bg:#f4f1ea;--card:#fffdf8;--ink:#1f2a24;--muted:#6b746e;--line:#e4dfd3;--accent:#2f6f5e;--accent2:#e9a23b;--soft:#e7f0ea;--on:#fff;--danger:#b4533a;
+--m1:#c95b4b;--m2:#e39a5c;--m3:#e8cf6a;--m4:#8cc08a;--m5:#3f8f6b;--empty:#ebe6da;--radius:16px}
+:root[data-theme=dark]{--bg:#141a17;--card:#1d2521;--ink:#eef2ee;--muted:#9aa59e;--line:#2e3833;--accent:#5fb394;--accent2:#f0b552;--soft:#233a31;--on:#0f1512;--empty:#26302b}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;border-radius:10px;padding:9px 14px;background:var(--accent);color:var(--on);font-weight:600}
+button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button.link{background:none;color:var(--accent);padding:4px 6px}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+input,select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%}
+textarea{min-height:70px;resize:vertical}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.side{padding:22px 14px;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px}
+.brand{font-weight:800;font-size:20px;display:flex;align-items:center;gap:8px;padding:0 10px 14px}
+.brand i{font-style:normal;width:30px;height:30px;border-radius:9px;background:var(--accent);color:var(--on);display:grid;place-items:center}
+.nav{background:none;color:var(--ink);text-align:left;font-weight:600;padding:10px 12px;display:flex;gap:10px}
+.nav.on{background:var(--soft);color:var(--accent)}
+.side .foot{margin-top:auto;font-size:12px;color:var(--muted);padding:0 10px}
+main{padding:28px clamp(16px,4vw,44px) 90px;max-width:1080px;width:100%}
+h1{font-size:28px;margin:0 0 2px;letter-spacing:-.01em}
+h2{font-size:17px;margin:0 0 10px}
+.muted{color:var(--muted)}.small{font-size:13px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));margin-top:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.hero{display:flex;gap:18px;align-items:center;background:var(--accent);color:var(--on);border-radius:20px;padding:20px 22px;margin-top:18px}
+.hero .big{font-size:30px;font-weight:800;line-height:1.1}
+.ring{--p:0;width:78px;height:78px;border-radius:50%;background:conic-gradient(var(--accent2) calc(var(--p)*1%),rgba(255,255,255,.22) 0);display:grid;place-items:center;flex:none}
+.ring b{width:60px;height:60px;border-radius:50%;background:var(--accent);display:grid;place-items:center;font-size:17px}
+.habit{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--line)}
+.habit:last-child{border-bottom:0}
+.check{width:38px;height:38px;border-radius:12px;border:2px solid var(--line);background:transparent;color:var(--accent);font-size:18px;padding:0;flex:none}
+.check.done{background:var(--accent);border-color:var(--accent);color:var(--on)}
+.habit .name{flex:1;font-weight:600}
+.flame{font-size:13px;color:var(--muted);white-space:nowrap}
+.flame b{color:var(--accent2)}
+.moods{display:flex;gap:8px}
+.mood{width:46px;height:46px;border-radius:14px;font-size:22px;padding:0;background:var(--bg);border:2px solid transparent}
+.mood.on{border-color:var(--accent)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:6px 10px;border-radius:999px;background:var(--bg);color:var(--ink);border:1px solid var(--line);font-weight:600;font-size:13px}
+.chip.on{background:var(--accent);color:var(--on);border-color:var(--accent)}
+.bar{height:8px;background:var(--empty);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.step{display:flex;gap:10px;align-items:center;padding:6px 0}
+.step input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent)}
+.step.done span{text-decoration:line-through;color:var(--muted)}
+.step .mo{font-size:12px;color:var(--muted);min-width:50px}
+.year{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;margin-top:14px}
+.month h3{font-size:13px;margin:0 0 6px;color:var(--muted);font-weight:700}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.px{aspect-ratio:1;border-radius:4px;background:var(--empty);border:0;padding:0}
+.px.blank{background:transparent}
+.px.today{outline:2px solid var(--ink);outline-offset:1px}
+.legend{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.legend span{width:14px;height:14px;border-radius:4px;display:inline-block}
+.empty{text-align:center;padding:26px 10px;color:var(--muted)}
+#toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;opacity:0;transition:.25s;pointer-events:none;z-index:50;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+.tabs{display:none}
+.icon-btn{background:none;color:var(--muted);padding:6px 8px}
+.weekbars .r{display:grid;grid-template-columns:1fr 120px 40px;gap:10px;align-items:center;padding:5px 0;font-size:14px}
+@media (max-width:760px){
+ .app{grid-template-columns:1fr}.side{display:none}
+ main{padding:20px 16px 96px}
+ .tabs{display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));z-index:20;justify-content:space-around}
+ .tabs button{background:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;font-size:11px;padding:4px 6px;gap:2px}
+ .tabs button.on{color:var(--accent)}
+ .hero{flex-direction:row}.hero .big{font-size:24px}
+ h1{font-size:24px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{.side,.tabs,button{display:none!important}.app{display:block}}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="side" aria-label="Sections">
+    <div class="brand"><i>S</i>Steady</div>
+    <div id="sideNav"></div>
+    <div class="foot">Saved on this device only.<br>No account, no subscription.</div>
+  </nav>
+  <main id="main" tabindex="-1"></main>
+</div>
+<nav class="tabs" id="tabNav" aria-label="Sections"></nav>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+'use strict';
+const KEY='steady-habit-goal-v1';
+const VIEWS=[['today','Today','☀️'],['habits','Habits','🔁'],['goals','Goals','🎯'],['year','Year','🟩'],['review','Review','📝'],['settings','Settings','⚙️']];
+const MOODS=[['😞','Rough'],['😕','Low'],['😐','Okay'],['🙂','Good'],['😄','Great']];
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DOW=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const pad=n=>String(n).padStart(2,'0');
+const dstr=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const todayStr=()=>dstr(new Date());
+const toDate=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d,12);};
+const addDays=(s,n)=>{const d=toDate(s);d.setDate(d.getDate()+n);return dstr(d);};
+const dow=s=>(toDate(s).getDay()+6)%7; // Mon=0
+const weekStart=s=>addDays(s,-dow(s));
+
+function blank(){return {v:1,name:'',theme:'light',view:'today',yearMode:'mood',year:new Date().getFullYear(),habits:[],log:{},moods:{},goals:[],reviews:{},sample:false};}
+let S;
+function load(){try{const r=localStorage.getItem(KEY);S=r?Object.assign(blank(),JSON.parse(r)):blank();}catch(e){S=blank();}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){toast('Could not save. Export a backup from Settings.');}}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2400);}
+
+// ---------- habit logic ----------
+const scheduled=(h,s)=>h.days[dow(s)]&&s>=h.created;
+const isDone=(h,s)=>!!(S.log[s]&&S.log[s][h.id]);
+// Streak with a grace day: one missed scheduled day per 7 scheduled days is forgiven.
+function streak(h){
+  let s=todayStr(),n=0,sinceMiss=99,guard=0;
+  if(scheduled(h,s)&&!isDone(h,s))s=addDays(s,-1);
+  while(guard++<800&&s>=h.created){
+    if(scheduled(h,s)){
+      if(isDone(h,s)){n++;sinceMiss++;}
+      else{if(sinceMiss<7||n===0)break;sinceMiss=0;}
+    }
+    s=addDays(s,-1);
+  }
+  return n;
+}
+function dayRate(s){const hs=S.habits.filter(h=>scheduled(h,s));if(!hs.length)return null;return hs.filter(h=>isDone(h,s)).length/hs.length;}
+function weekRate(h,ws){let due=0,done=0;for(let i=0;i<7;i++){const s=addDays(ws,i);if(s>todayStr())break;if(scheduled(h,s)){due++;if(isDone(h,s))done++;}}return due?done/due:null;}
+// Goal steps are due in a month: 'YYYY-MM'. Older saves used a bare month index.
+const ymOff=n=>{const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+n);return d.getFullYear()+'-'+pad(d.getMonth()+1);};
+const due=st=>st.due||(new Date().getFullYear()+'-'+pad((st.month||0)+1));
+const dueLabel=st=>{const [y,m]=due(st).split('-');return MONTHS[+m-1]+(+y!==new Date().getFullYear()?" '"+y.slice(2):'');};
+function nextStep(){let best=null;S.goals.forEach(g=>g.steps.forEach(st=>{if(!st.done&&(best==null||due(st)<due(best.st)))best={g,st};}));return best;}
+
+// ---------- views ----------
+const V={};
+V.today=()=>{
+  const t=todayStr(),due=S.habits.filter(h=>scheduled(h,t)),done=due.filter(h=>isDone(h,t)).length;
+  const pct=due.length?Math.round(done/due.length*100):0,hr=new Date().getHours();
+  const greet=hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
+  const ns=nextStep(),mood=S.moods[t];
+  const msg=!due.length?'No habits planned today. Rest counts too.':done===due.length?'All done. That is a steady day.':done?'Nice start. Keep it small and keep going.':'One small check is enough to begin.';
+  return `<h1>${greet}${S.name?', '+esc(S.name):''}</h1>
+  <div class="muted">${toDate(t).toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}</div>
+  <div class="hero"><div class="ring" style="--p:${pct}"><b>${done}/${due.length}</b></div>
+   <div><div class="small" style="opacity:.85">Today's habits</div><div class="big">${msg}</div></div></div>
+  <div class="grid">
+   <div class="card"><h2>Check in</h2>${due.length?due.map(habitRow).join(''):`<div class="empty">Nothing scheduled.<br><button class="link" data-a="go" data-v="habits">Add a habit</button></div>`}</div>
+   <div class="card"><h2>How are you feeling?</h2>
+    <div class="moods">${MOODS.map((m,i)=>`<button class="mood ${mood===i+1?'on':''}" data-a="mood" data-v="${i+1}" aria-label="${m[1]}" title="${m[1]}">${m[0]}</button>`).join('')}</div>
+    <p class="small muted" style="margin:10px 0 0">${mood?'Logged: '+MOODS[mood-1][1]+'. It colors your year in pixels.':'One tap. It builds your year in pixels.'}</p>
+    <h2 style="margin-top:20px">Next goal step</h2>
+    ${ns?`<div class="step"><input type="checkbox" data-c="step" data-g="${ns.g.id}" data-s="${ns.st.id}" aria-label="Mark step done"><span><b>${esc(ns.st.t)}</b><br><span class="small muted">${esc(ns.g.title)} · ${dueLabel(ns.st)}</span></span></div>`:`<div class="small muted">No open steps. <button class="link" data-a="go" data-v="goals">Plan a goal</button></div>`}
+   </div>
+  </div>`;
+};
+function habitRow(h){const t=todayStr(),d=isDone(h,t),st=streak(h);
+  return `<div class="habit"><button class="check ${d?'done':''}" data-a="tick" data-id="${h.id}" aria-pressed="${d}" aria-label="${d?'Undo':'Mark done'}: ${esc(h.name)}">${d?'✓':''}</button>
+  <span style="font-size:20px">${esc(h.emoji||'•')}</span><span class="name">${esc(h.name)}</span>
+  <span class="flame" title="Streak. One missed day a week is forgiven.">🔥 <b>${st}</b></span></div>`;}
+
+V.habits=()=>`<h1>Habits</h1><div class="muted">Small, repeatable, kind. Missing one day a week never resets your streak.</div>
+ <div class="grid">
+  <div class="card"><h2>Your habits</h2>${S.habits.length?S.habits.map(h=>`<div class="habit"><span style="font-size:20px">${esc(h.emoji||'•')}</span>
+   <span class="name">${esc(h.name)}<br><span class="small muted">${h.days.every(Boolean)?'Every day':DOW.filter((_,i)=>h.days[i]).join(' ')}</span></span>
+   <span class="flame">🔥 <b>${streak(h)}</b></span><button class="icon-btn" data-a="delHabit" data-id="${h.id}" aria-label="Delete ${esc(h.name)}">✕</button></div>`).join(''):`<div class="empty">No habits yet. Start with one.</div>`}</div>
+  <div class="card"><h2>Add a habit</h2>
+   <div class="row"><input id="hEmoji" maxlength="2" placeholder="💧" style="width:60px;text-align:center" aria-label="Emoji"><input id="hName" placeholder="Drink a glass of water" style="flex:1" data-enter="addHabit" aria-label="Habit name"></div>
+   <p class="small muted" style="margin:12px 0 6px">Which days?</p>
+   <div class="chips" id="hDays">${DOW.map((d,i)=>`<button class="chip on" data-a="dayChip" data-i="${i}" aria-pressed="true">${d}</button>`).join('')}</div>
+   <p class="small muted">Ideas: 10 minute tidy, take meds, walk outside, read 5 pages, no phone in bed.</p>
+   <button data-a="addHabit">Add habit</button></div>
+ </div>`;
+
+V.goals=()=>`<h1>Goals</h1><div class="muted">Big goals, broken into one small step per month.</div>
+ <div class="grid">${S.goals.map(g=>{const d=g.steps.filter(s=>s.done).length,p=g.steps.length?Math.round(d/g.steps.length*100):0;
+  return `<div class="card"><div class="row" style="justify-content:space-between"><h2 style="margin:0">${esc(g.title)}</h2><button class="icon-btn" data-a="delGoal" data-id="${g.id}" aria-label="Delete goal">✕</button></div>
+   ${g.why?`<p class="small muted" style="margin:4px 0 10px">Why: ${esc(g.why)}</p>`:''}
+   <div class="bar" aria-label="${p}% done"><i style="width:${p}%"></i></div><p class="small muted" style="margin:6px 0">${d} of ${g.steps.length} steps · ${p}%</p>
+   ${g.steps.slice().sort((a,b)=>due(a).localeCompare(due(b))).map(st=>`<div class="step ${st.done?'done':''}"><input type="checkbox" ${st.done?'checked':''} data-c="step" data-g="${g.id}" data-s="${st.id}" aria-label="Step done"><span class="mo">${dueLabel(st)}</span><span>${esc(st.t)}</span></div>`).join('')}
+   <div class="row" style="margin-top:8px"><select id="m-${g.id}" style="width:96px" aria-label="Month">${[...Array(15)].map((_,i)=>{const v=ymOff(i);return `<option value="${v}">${dueLabel({due:v})}</option>`;}).join('')}</select><input id="s-${g.id}" placeholder="Next small step" style="flex:1" data-enter="addStep" data-g="${g.id}" aria-label="New step"><button class="ghost" data-a="addStep" data-g="${g.id}">Add</button></div></div>`;}).join('')}
+  <div class="card"><h2>New goal</h2><input id="gTitle" placeholder="Run a 5K" aria-label="Goal"><input id="gWhy" placeholder="Why it matters (optional)" style="margin-top:8px" aria-label="Why"><button style="margin-top:10px" data-a="addGoal">Add goal</button>
+   <p class="small muted">Tip: give each goal 3 to 12 steps, one per month. Done beats perfect.</p></div>
+ </div>`;
+
+V.year=()=>{const y=S.year,t=todayStr(),mode=S.yearMode;
+ const color=s=>{if(mode==='mood'){const m=S.moods[s];return m?`var(--m${m})`:'';}const r=dayRate(s);if(r==null||s>t)return '';if(r===0)return 'var(--m1)';return r>=1?'var(--m5)':r>=.6?'var(--m4)':r>=.3?'var(--m3)':'var(--m2)';};
+ let html='';for(let m=0;m<12;m++){const first=new Date(y,m,1,12),n=new Date(y,m+1,0).getDate(),off=(first.getDay()+6)%7;let cells='';
+  for(let i=0;i<off;i++)cells+='<span class="px blank"></span>';
+  for(let d=1;d<=n;d++){const s=y+'-'+pad(m+1)+'-'+pad(d),c=color(s);cells+=`<span class="px ${s===t?'today':''}" style="${c?'background:'+c:''}" title="${s}${mode==='mood'&&S.moods[s]?': '+MOODS[S.moods[s]-1][1]:''}"></span>`;}
+  html+=`<div class="month"><h3>${MONTHS[m]}</h3><div class="days">${cells}</div></div>`;}
+ const legend=mode==='mood'?MOODS.map((m,i)=>`<span style="background:var(--m${i+1})"></span>${m[1]}`).join(' '):'<span style="background:var(--m1)"></span>None <span style="background:var(--m2)"></span>Some <span style="background:var(--m3)"></span>Half <span style="background:var(--m4)"></span>Most <span style="background:var(--m5)"></span>All habits';
+ return `<h1>Year in pixels</h1><div class="muted">Every day of ${y}, one square.</div>
+ <div class="row" style="margin-top:14px;justify-content:space-between"><div class="chips"><button class="chip ${mode==='mood'?'on':''}" data-a="yMode" data-v="mood">Mood</button><button class="chip ${mode==='habits'?'on':''}" data-a="yMode" data-v="habits">Habits</button></div>
+ <div class="row"><button class="ghost" data-a="yr" data-v="-1" aria-label="Previous year">‹</button><b>${y}</b><button class="ghost" data-a="yr" data-v="1" aria-label="Next year">›</button></div></div>
+ <div class="legend" style="margin-top:10px">${legend}</div>
+ <div class="card" style="margin-top:14px"><div class="year">${html}</div></div>`;};
+
+V.review=()=>{const ws=weekStart(todayStr()),r=S.reviews[ws]||{};
+ return `<h1>Weekly review</h1><div class="muted">Week of ${toDate(ws).toLocaleDateString(undefined,{month:'long',day:'numeric'})}. Five minutes, no judgment.</div>
+ <div class="grid"><div class="card weekbars"><h2>This week so far</h2>${S.habits.length?S.habits.map(h=>{const w=weekRate(h,ws);return `<div class="r"><span>${esc(h.emoji||'')} ${esc(h.name)}</span><div class="bar"><i style="width:${w==null?0:Math.round(w*100)}%"></i></div><span class="small muted">${w==null?'–':Math.round(w*100)+'%'}</span></div>`;}).join(''):'<div class="empty">Add habits to see your week.</div>'}</div>
+ <div class="card"><h2>Reflect</h2>
+  <label class="small muted">One win, however small</label><textarea data-c="rev" data-k="win">${esc(r.win)}</textarea>
+  <label class="small muted">What got in the way?</label><textarea data-c="rev" data-k="hard">${esc(r.hard)}</textarea>
+  <label class="small muted">One thing to try next week</label><textarea data-c="rev" data-k="next">${esc(r.next)}</textarea>
+  <p class="small muted">Saves as you type.</p></div></div>`;};
+
+V.settings=()=>`<h1>Settings</h1>
+ <div class="grid">
+  <div class="card"><h2>You</h2><label class="small muted">Your name</label><input data-c="name" value="${esc(S.name)}" placeholder="Optional">
+   <h2 style="margin-top:16px">Theme</h2><div class="chips"><button class="chip ${S.theme==='light'?'on':''}" data-a="theme" data-v="light">Light</button><button class="chip ${S.theme==='dark'?'on':''}" data-a="theme" data-v="dark">Dark</button></div></div>
+  <div class="card"><h2>Backup</h2><p class="small muted">Your data lives only in this browser. Export a backup now and then, or to move to another device.</p>
+   <div class="row"><button data-a="export">Export backup</button><label class="ghost" style="border:1px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer;font-weight:600">Import backup<input type="file" accept=".json,application/json" data-c="import" hidden></label></div></div>
+  <div class="card"><h2>Example data</h2><p class="small muted">See Steady filled in with sample habits, goals and moods.</p>
+   <div class="row"><button class="ghost" id="sampleBtn" data-a="sample">Load example data</button><button class="ghost" data-a="clearSample">Clear example data</button></div></div>
+  <div class="card"><h2>Start fresh</h2><p class="small muted">Deletes everything on this device. Export first if you might want it back.</p><button class="ghost" style="color:var(--danger)" data-a="reset">Delete all data</button></div>
+ </div>`;
+
+function render(){
+  document.documentElement.dataset.theme=S.theme;
+  const nav=VIEWS.map(([k,l,i])=>`<button class="nav ${S.view===k?'on':''}" data-a="go" data-v="${k}" ${S.view===k?'aria-current="page"':''}><span>${i}</span>${l}</button>`).join('');
+  $('#sideNav').innerHTML=nav;
+  $('#tabNav').innerHTML=VIEWS.map(([k,l,i])=>`<button class="${S.view===k?'on':''}" data-a="go" data-v="${k}"><span style="font-size:18px">${i}</span>${l}</button>`).join('');
+  $('#main').innerHTML=(V[S.view]||V.today)();
+}
+
+// ---------- sample ----------
+function sample(){
+  const t=todayStr(),start=addDays(t,-320),all=[1,1,1,1,1,1,1];
+  const s=blank();s.sample=true;s.name='Sam';s.theme=S.theme;
+  s.habits=[{id:'h1',name:'Drink water first thing',emoji:'💧',days:all,created:start},{id:'h2',name:'Take meds',emoji:'💊',days:all,created:start},
+    {id:'h3',name:'10 minute tidy',emoji:'🧺',days:[1,1,1,1,1,0,0],created:start},{id:'h4',name:'Walk outside',emoji:'🚶',days:[1,0,1,0,1,1,0],created:start},{id:'h5',name:'Read 5 pages',emoji:'📖',days:all,created:start}];
+  let seed=7;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280;};
+  for(let i=320;i>=1;i--){const d=addDays(t,-i);s.log[d]={};s.habits.forEach(h=>{if(h.days[dow(d)]&&rnd()<(.5+.4*(1-i/320)))s.log[d][h.id]=true;});
+    s.moods[d]=Math.max(1,Math.min(5,Math.round(2.2+rnd()*2.6+(1-i/320)*.8)));}
+  s.log[t]={h1:true,h2:true};
+  const st=([x,mo,d])=>({id:uid(),t:x,due:ymOff(mo),done:!!d});
+  s.goals=[{id:'g1',title:'Run a 5K',why:'Feel strong and sleep better',steps:[['Walk 20 min, 3x a week',-1,1],['Couch to 5K week 1',0,1],['Run 1K without stopping',0,0],['Sign up for a local 5K',2,0],['Run 3K',4,0],['Race day',6,0]].map(st)},
+    {id:'g2',title:'Save a $1,000 cushion',why:'No more panic when the car breaks',steps:[['Open a separate savings account',-1,1],['Auto-transfer $50 each payday',0,1],['Cancel 2 unused subscriptions',0,0],['Reach $500',3,0],['Reach $1,000',7,0]].map(st)},
+    {id:'g3',title:'Read 12 books',why:'One book a month, any book counts',steps:[0,1,2,3,4,5].map(i=>st(['Finish book '+(i+1),i-1,i<1]))}];
+  s.reviews[weekStart(t)]={win:'Took my meds every day this week.',hard:'Late nights made mornings hard.',next:'Phone charges outside the bedroom.'};
+  return s;
+}
+
+// ---------- actions ----------
+const A={
+  go:el=>{S.view=el.dataset.v;save();render();$('#main').focus({preventScroll:true});window.scrollTo(0,0);},
+  tick:el=>{const t=todayStr(),id=el.dataset.id;S.log[t]=S.log[t]||{};if(S.log[t][id])delete S.log[t][id];else{S.log[t][id]=true;const h=S.habits.find(x=>x.id===id),st=streak(h);toast(st>1?`${st} day streak. Steady!`:'Done. Nice.');}save();render();},
+  mood:el=>{const t=todayStr(),v=+el.dataset.v;if(S.moods[t]===v)delete S.moods[t];else S.moods[t]=v;save();render();},
+  dayChip:el=>{const on=!el.classList.contains('on');el.classList.toggle('on',on);el.setAttribute('aria-pressed',on);},
+  addHabit:()=>{const n=$('#hName').value.trim();if(!n)return toast('Give your habit a name');const days=[...document.querySelectorAll('#hDays .chip')].map(c=>c.classList.contains('on')?1:0);if(!days.some(Boolean))return toast('Pick at least one day');
+    S.habits.push({id:uid(),name:n,emoji:$('#hEmoji').value.trim(),days,created:todayStr()});save();render();toast('Habit added');},
+  delHabit:el=>{const h=S.habits.find(x=>x.id===el.dataset.id);if(!h||!confirm(`Delete "${h.name}" and its history?`))return;S.habits=S.habits.filter(x=>x!==h);Object.values(S.log).forEach(l=>delete l[h.id]);save();render();},
+  addGoal:()=>{const t=$('#gTitle').value.trim();if(!t)return toast('Name your goal');S.goals.push({id:uid(),title:t,why:$('#gWhy').value.trim(),steps:[]});save();render();toast('Goal added. Now add a first step.');},
+  delGoal:el=>{const g=S.goals.find(x=>x.id===el.dataset.id);if(!g||!confirm(`Delete goal "${g.title}"?`))return;S.goals=S.goals.filter(x=>x!==g);save();render();},
+  addStep:el=>{const g=S.goals.find(x=>x.id===el.dataset.g),inp=$('#s-'+g.id),t=inp.value.trim();if(!t)return toast('Write a small step');g.steps.push({id:uid(),t,due:$('#m-'+g.id).value,done:false});save();render();},
+  yMode:el=>{S.yearMode=el.dataset.v;save();render();},
+  yr:el=>{S.year+= +el.dataset.v;save();render();},
+  theme:el=>{S.theme=el.dataset.v;save();render();},
+  export:()=>{const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='steady-backup-'+todayStr()+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);toast('Backup exported');},
+  sample:()=>{if((S.habits.length||S.goals.length)&&!S.sample&&!confirm('Replace what is here with example data? Export a backup first if you entered your own.'))return;const v=S.view;S=sample();S.view=v==='settings'?'today':v;save();render();toast('Example data loaded');},
+  clearSample:()=>{if(!S.sample)return toast('No example data loaded');const th=S.theme;S=blank();S.theme=th;S.view='today';save();render();toast('Cleared. Add your first habit.');},
+  reset:()=>{if(!confirm('Delete all Steady data on this device? This cannot be undone.'))return;const th=S.theme;S=blank();S.theme=th;save();render();toast('Everything cleared');}
+};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;const f=A[el.dataset.a];if(f){e.preventDefault();f(el,e);}});
+document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const el=e.target.closest('[data-enter]');if(!el)return;e.preventDefault();const f=A[el.dataset.enter];if(f)f(el);});
+document.addEventListener('change',e=>{const el=e.target;switch(el.dataset.c){
+  case 'step':{const g=S.goals.find(x=>x.id===el.dataset.g),st=g&&g.steps.find(x=>x.id===el.dataset.s);if(!st)return;st.done=el.checked;if(st.done){S.sample=S.sample;toast('Step done. One closer.');}save();render();break;}
+  case 'import':{const file=el.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.habits))throw 0;if(!confirm('Replace the data on this device with this backup?'))return;S=Object.assign(blank(),d);save();render();toast('Backup imported');}catch(err){toast("That file isn't a Steady backup");}el.value='';};r.readAsText(file);break;}
+}});
+document.addEventListener('input',e=>{const el=e.target;
+  if(el.dataset.c==='name'){S.name=el.value.slice(0,40);save();}
+  if(el.dataset.c==='rev'){const ws=weekStart(todayStr());S.reviews[ws]=S.reviews[ws]||{};S.reviews[ws][el.dataset.k]=el.value;save();}
+});
+load();
+if(window.KEPT_DEMO){const th=S.theme;S=sample();S.theme=th;} // demo build: always start from example data
+if(!S.habits.length&&!S.goals.length&&!S.name){S.view='habits';}
+const hv=location.hash.slice(1);if(VIEWS.some(v=>v[0]===hv))S.view=hv;
+if(/[?&]theme=dark/.test(location.search))S.theme='dark';
+render();
+// refresh at midnight so "today" stays correct
+let lastDay=todayStr();setInterval(()=>{if(todayStr()!==lastDay){lastDay=todayStr();render();}},60000);
+})();
+</script>
+</body>
+</html>
