@@ -197,14 +197,18 @@ function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');cl
 // ---------- habit logic ----------
 const scheduled=(h,s)=>h.days[dow(s)]&&s>=h.created;
 const isDone=(h,s)=>!!(S.log[s]&&S.log[s][h.id]);
-// Streak with a grace day: one missed scheduled day per 7 scheduled days is forgiven.
+// Streak with a grace day: one missed scheduled day per week is forgiven.
+// Walking back from today, a miss is forgiven only if the previous forgiven miss
+// is at least 7 calendar days later; a second miss inside the same 7 days ends the streak.
+// Today doesn't count as missed until the day is over.
+const daysBetween=(a,b)=>Math.round((toDate(b)-toDate(a))/864e5);
 function streak(h){
-  let s=todayStr(),n=0,sinceMiss=99,guard=0;
+  let s=todayStr(),n=0,lastForgiven=null,guard=0;
   if(scheduled(h,s)&&!isDone(h,s))s=addDays(s,-1);
   while(guard++<800&&s>=h.created){
     if(scheduled(h,s)){
-      if(isDone(h,s)){n++;sinceMiss++;}
-      else{if(sinceMiss<7||n===0)break;sinceMiss=0;}
+      if(isDone(h,s))n++;
+      else{if(lastForgiven&&daysBetween(s,lastForgiven)<7)break;lastForgiven=s;}
     }
     s=addDays(s,-1);
   }
